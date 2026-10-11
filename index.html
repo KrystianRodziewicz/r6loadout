@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>R6 Setupy</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@500;600;700&family=Barlow:wght@400;500;600&display=swap">
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+  <div class="app">
+    <aside class="sidebar">
+      <a class="logo" href="#/">R6 <span>SETUPY</span></a>
+      <nav class="tabs">
+        <a href="#/" data-tab="ops">Operatorzy</a>
+        <a href="#/maps" data-tab="maps">Mapy</a>
+      </nav>
+      <input type="search" id="search" placeholder="Szukaj…" autocomplete="off">
+      <div class="sidebar-list" id="sidebar-list"></div>
+      <div class="sidebar-foot">
+        <button type="button" id="editor-toggle" class="btn ghost">Edytor: wył.</button>
+        <a href="#/edit" id="draft-link" class="btn ghost" hidden>Szkic setupu →</a>
+      </div>
+    </aside>
+
+    <main class="main" id="main"></main>
+  </div>
+
+  <div class="tooltip" id="tooltip" hidden></div>
+
+  <!-- biblioteka animacji (opcjonalna, bez niej strona działa bez ruchu) -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.2/anime.min.js"></script>
+
+  <script src="data/markers.js"></script>
+  <script src="data/maps.js"></script>
+  <script src="data/operators.js"></script>
+  <script src="data/setups.js"></script>
+  <script src="js/anim.js"></script>
+  <script src="js/mapview.js"></script>
+  <script src="js/editor.js"></script>
+  <script src="js/app.js"></script>
+</body>
+</html>
