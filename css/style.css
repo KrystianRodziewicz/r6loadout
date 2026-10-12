@@ -180,7 +180,7 @@ code { background: var(--panel-2); padding: 1px 5px; border-radius: 4px; font-si
 .loadout-top { display: flex; align-items: center; justify-content: space-between; gap: 16px; flex-wrap: wrap; margin-bottom: 10px; }
 .gadgets { display: inline-flex; align-items: center; gap: 8px; flex-wrap: wrap; }
 .gadget { display: inline-flex; align-items: center; gap: 8px; font-family: var(--display); text-transform: uppercase; letter-spacing: 0.05em; font-size: 1.05rem; padding: 5px 14px 5px 8px; border-radius: 8px; border: 1px solid var(--border); background: var(--panel-2); }
-.gadget img { width: 28px; height: 28px; padding: 2px; border-radius: 6px; background: #dfe3ea; }
+.gadget img { width: 32px; height: 32px; padding: 3px; border-radius: 7px; background: #e6e9ef; }
 .gadget.main { border-color: var(--accent); color: var(--accent); }
 .loadout-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; align-items: stretch; }
 
@@ -200,7 +200,7 @@ code { background: var(--panel-2); padding: 1px 5px; border-radius: 4px; font-si
   background-size: 22px 22px;
 }
 .wcard.primary .wfig { height: clamp(136px, 21.4vh, 244px); }
-.wbox { position: relative; height: 58%; max-width: 86%; }
+.wbox { position: relative; height: 52%; max-width: 62%; }
 .wimg, .wsil { display: block; width: 100%; height: 100%; object-fit: contain; }
 .wimg { filter: var(--gun) drop-shadow(0 6px 10px rgba(0,0,0,.55)); }
 .wpn > * { fill: rgba(245, 165, 36, 0.12); stroke: var(--accent); stroke-width: 2.4; stroke-linejoin: round; stroke-linecap: round; }
@@ -209,9 +209,9 @@ code { background: var(--panel-2); padding: 1px 5px; border-radius: 4px; font-si
 .wco { position: absolute; inset: 0; width: 100%; height: 100%; overflow: visible; }
 .wco .ln { fill: none; stroke: #ffffff; stroke-opacity: 0.85; stroke-width: 0.9; }
 .wco .pt { fill: var(--accent); stroke: var(--bg); stroke-width: 1; }
-.wco .aibg { fill: #dfe3ea; }
-.wco .lab { font-family: var(--display); font-weight: 600; font-size: 7px; letter-spacing: 0.9px; text-transform: uppercase; fill: var(--muted); }
-.wco .val { font-family: var(--display); font-weight: 700; font-size: 11.5px; fill: var(--text); }
+.wco .aibg { fill: #e6e9ef; stroke: var(--accent); stroke-width: 0.8; }
+.wco .lab { font-family: var(--display); font-weight: 600; font-size: 7.6px; letter-spacing: 0.9px; text-transform: uppercase; fill: var(--muted); }
+.wco .val { font-family: var(--display); font-weight: 700; font-size: 13px; fill: var(--text); }
 .wnoatt { position: absolute; right: 10px; bottom: 8px; font-family: var(--display); text-transform: uppercase; letter-spacing: .12em; font-size: .75rem; color: var(--muted); }
 
 .wwhen { display: flex; gap: 8px; align-items: flex-start; font-size: 0.88rem; line-height: 1.35; color: var(--muted); margin-top: auto; padding-top: 2px; }

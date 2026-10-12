@@ -89,27 +89,38 @@ window.Weapons = (function () {
   // ---------- linie do dodatków ----------
   // Układ w jednostkach płótna broni (zwykle 290x100). Etykiety siedzą w pasach nad i pod płótnem:
   // góra: celownik i lufa, dół: chwyt i podlufowe. Kierunek etykiety dobieramy tak, żeby się nie nachodziły.
-  const ROW_TOP = -16, ROW_BOT = 116, ELBOW = 8, ICON = 20, GAP = 3, CHAR = 5.9;
+  // ICON = bok kafelka z ikoną dodatku. SPARE = ile miejsca po bokach płótna gwarantuje CSS (.wbox max-width).
+  const ROW_TOP = -23, ROW_BOT = 123, ELBOW = 8, ICON = 34, GAP = 4, CHAR = 6.5, SPARE = 84;
+
+  // Długie nazwy ("Extended barrel", "Vertical grip") łamiemy na dwie linie, żeby etykieta była wąska.
+  function valueLines(v) {
+    const s = String(v);
+    if (s.length < 12 || !s.includes(" ")) return [s];
+    const cut = s.lastIndexOf(" ");
+    return [s.slice(0, cut), s.slice(cut + 1)];
+  }
 
   function callouts(att, A, W) {
     const has = (k) => A && A[k] && att[k] && att[k] !== "—";
-    const need = (k) => Math.max(String(att[k]).length, T(k).length * 0.7) * CHAR;
+    const need = (k) => Math.max(Math.max(...valueLines(att[k]).map((l) => l.length)) * CHAR, T(k).length * 4.8);
     const reach = ELBOW + GAP + ICON + GAP;   // od linii do początku tekstu
+    const fitsRight = (k) => A[k][0] + reach + need(k) <= W + SPARE;
     const plan = [];
 
     if (has("sight")) plan.push({ k: "sight", top: true, dir: -1 });
     if (has("barrel")) {
       const bx = A.barrel[0];
-      let dir = (bx + reach + need("barrel") <= W + 12) ? 1 : -1;
-      if (dir === -1 && has("sight") && bx - reach - need("barrel") < A.sight[0] + 6) dir = 1;
+      // w lewo, jeśli tekst zmieści się między linią celownika a lufą; inaczej w prawo
+      const leftEdge = bx - reach - need("barrel");
+      const clearOfSight = !has("sight") || leftEdge >= A.sight[0] + 4;
+      const dir = (clearOfSight && leftEdge >= -SPARE && !(fitsRight("barrel") && bx < W * 0.74)) ? -1 : 1;
       plan.push({ k: "barrel", top: true, dir });
     }
     const low = ["grip", "under"].filter(has).sort((p, q) => A[p][0] - A[q][0]);
     if (low.length === 2) {
       plan.push({ k: low[0], top: false, dir: -1 }, { k: low[1], top: false, dir: 1 });
     } else if (low.length === 1) {
-      const x = A[low[0]][0];
-      plan.push({ k: low[0], top: false, dir: (x + reach + need(low[0]) <= W + 12) ? 1 : -1 });
+      plan.push({ k: low[0], top: false, dir: fitsRight(low[0]) ? 1 : -1 });
     }
 
     return plan.map(({ k, top, dir }) => {
@@ -118,13 +129,18 @@ window.Weapons = (function () {
       const ex = ax + dir * ELBOW;
       const ix = dir > 0 ? ex + GAP : ex - GAP - ICON;
       const tx = dir > 0 ? ix + ICON + GAP : ix - GAP;
+      const anchor = dir > 0 ? "start" : "end";
+      const lines = valueLines(att[k]);
+      const two = lines.length > 1;
+      const labY = two ? row - 9.5 : row - 4;
+      const valY = two ? row + 2 : row + 10;
       return `<g class="callout">
         <polyline class="ln" points="${ax},${ay} ${ax},${row} ${ex},${row}"/>
-        <circle class="pt" cx="${ax}" cy="${ay}" r="2.4"/>
-        <rect class="aibg" x="${ix}" y="${row - ICON / 2}" width="${ICON}" height="${ICON}" rx="3"/>
-        <image class="aico" href="${esc(iconFor(k, att[k]))}" x="${ix + 1.5}" y="${row - ICON / 2 + 1.5}" width="${ICON - 3}" height="${ICON - 3}"/>
-        <text class="lab" x="${tx}" y="${row - 3}" text-anchor="${dir > 0 ? "start" : "end"}">${esc(T(k))}</text>
-        <text class="val" x="${tx}" y="${row + 8.5}" text-anchor="${dir > 0 ? "start" : "end"}">${esc(att[k])}</text>
+        <circle class="pt" cx="${ax}" cy="${ay}" r="2.6"/>
+        <rect class="aibg" x="${ix}" y="${row - ICON / 2}" width="${ICON}" height="${ICON}" rx="4"/>
+        <image class="aico" href="${esc(iconFor(k, att[k]))}" x="${ix + 2.5}" y="${row - ICON / 2 + 2.5}" width="${ICON - 5}" height="${ICON - 5}"/>
+        <text class="lab" x="${tx}" y="${labY}" text-anchor="${anchor}">${esc(T(k))}</text>
+        ${lines.map((l, i) => `<text class="val" x="${tx}" y="${valY + i * 11.5}" text-anchor="${anchor}">${esc(l)}</text>`).join("")}
       </g>`;
     }).join("");
   }
