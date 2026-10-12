@@ -4,7 +4,9 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>R6 Loadout</title>
-  <meta name="description" content="Najlepszy loadout dla każdego operatora Rainbow Six Siege: broń, dodatki, gadżety. Szybko i czytelnie.">
+  <meta name="description" content="Best loadout for every Rainbow Six Siege operator: weapons, attachments, gadgets, best operators per map and duos. Najlepszy loadout dla każdego operatora R6.">
+  <link rel="icon" type="image/svg+xml" href="favicon.svg">
+  <meta name="theme-color" content="#0e1014">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@500;600;700&family=Barlow:wght@400;500;600&display=swap">
   <link rel="stylesheet" href="css/style.css">
@@ -12,15 +14,23 @@
 <body>
   <div class="app">
     <aside class="sidebar">
-      <a class="logo" href="#/">R6 <span>LOADOUT</span></a>
+      <div class="side-top">
+        <a class="logo" href="#/">R6 <span>LOADOUT</span></a>
+        <button type="button" class="lang" id="lang-toggle" title="Change language">EN</button>
+      </div>
       <nav class="tabs">
-        <a href="#/" data-tab="ops">Operatorzy</a>
-        <a href="#/lista" data-tab="list">Lista</a>
+        <a href="#/" data-tab="ops" data-i18n="tab_ops">Operatorzy</a>
+        <a href="#/lista" data-tab="list" data-i18n="tab_list">Lista</a>
+        <a href="#/mapy" data-tab="maps" data-i18n="tab_maps">Mapy</a>
+        <a href="#/duo" data-tab="duos" data-i18n="tab_duos">Duety</a>
       </nav>
-      <input type="search" id="search" placeholder="Szukaj operatora…" autocomplete="off">
+      <label class="search-wrap">
+        <svg class="search-ico" viewBox="0 0 24 24" aria-hidden="true"><circle cx="10.5" cy="10.5" r="6.5" fill="none" stroke="currentColor" stroke-width="2"/><path d="M15.5 15.5 21 21" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"/></svg>
+        <input type="search" id="search" placeholder="Szukaj operatora…" autocomplete="off">
+      </label>
       <div class="sidebar-list" id="sidebar-list"></div>
       <div class="sidebar-foot">
-        <p class="foot-note">Loadouty: meta wg skycoach.gg (10.2026) + własne poprawki.<br>Ikony: r6operators (MIT). Flagi: flagcdn.</p>
+        <p class="foot-note" id="foot-note"></p>
       </div>
     </aside>
 
@@ -32,9 +42,14 @@
   <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r134/three.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/vanta/0.5.24/vanta.net.min.js"></script>
 
+  <script src="data/config.js"></script>
   <script src="data/weapons.js"></script>
+  <script src="data/weaponImages.js"></script>
   <script src="data/opmeta.js"></script>
   <script src="data/operators.js"></script>
+  <script src="data/maps.js"></script>
+  <script src="data/duos.js"></script>
+  <script src="js/i18n.js"></script>
   <script src="js/anim.js"></script>
   <script src="js/weapons.js"></script>
   <script src="js/app.js"></script>

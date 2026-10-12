@@ -1,9 +1,10 @@
 // Animacje (anime.js v3) + animowane tło (Vanta NET na three.js).
-// Wszystko opcjonalne: bez bibliotek albo przy "prefers-reduced-motion" strona działa bez ruchu.
+// Wszystko opcjonalne: bez bibliotek, przy "prefers-reduced-motion" albo gdy karta jest w tle,
+// strona od razu pokazuje stan końcowy.
 
 window.Anim = (function () {
   const reduce = window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-  const ok = () => !reduce && typeof anime !== "undefined";
+  const ok = () => !reduce && typeof anime !== "undefined" && !document.hidden;
   const clear = (targets) => () => targets.forEach((t) => { t.style.transform = ""; t.style.opacity = ""; });
 
   function tiles(root) {
@@ -16,35 +17,42 @@ window.Anim = (function () {
 
   function page(root) {
     if (!ok()) return;
-    const icon = root.querySelector(".op-hero");
-    const head = [...root.querySelectorAll(".page-head .grow > *")];
+    const icon = root.querySelector(".page-head .op-icon.xl");
+    const head = [...root.querySelectorAll(".page-head .grow > *, .map-hero-in > *")];
     const cards = [...root.querySelectorAll(".anim-card")];
     const tl = anime.timeline({ easing: "easeOutCubic" });
-    if (icon) tl.add({ targets: icon, scale: [0.6, 1], rotate: [-8, 0], opacity: [0, 1], duration: 520, easing: "easeOutBack", complete: clear([icon]) });
-    if (head.length) tl.add({ targets: head, translateX: [-18, 0], opacity: [0, 1], delay: anime.stagger(60), duration: 420, complete: clear(head) }, "-=380");
-    if (cards.length) tl.add({ targets: cards, translateY: [16, 0], opacity: [0, 1], delay: anime.stagger(70), duration: 420, complete: clear(cards) }, "-=260");
+    if (icon) tl.add({ targets: icon, scale: [0.6, 1], rotate: [-8, 0], opacity: [0, 1], duration: 480, easing: "easeOutBack", complete: clear([icon]) });
+    if (head.length) tl.add({ targets: head, translateX: [-18, 0], opacity: [0, 1], delay: anime.stagger(60), duration: 400, complete: clear(head) }, icon ? "-=360" : 0);
+    if (cards.length) tl.add({ targets: cards, translateY: [14, 0], opacity: [0, 1], delay: anime.stagger(35), duration: 380, complete: clear(cards) }, "-=260");
   }
 
-  // Rysowanie broni: obrys "kreśli się", potem linie do dodatków i etykiety.
+  // Karty broni: broń wjeżdża, potem linie "kreślą się" do dodatków i pojawiają się etykiety.
   function weapons(root) {
     if (!ok()) return;
-    const cards = [...root.querySelectorAll(".wcard")];
-    cards.forEach((card, ci) => {
-      const shapes = [...card.querySelectorAll(".wpn > *")];
+    [...root.querySelectorAll(".wcard")].forEach((card, ci) => {
+      const base = 100 + ci * 140;
+      const gun = card.querySelector(".wimg, .wsil");
       const lines = [...card.querySelectorAll(".callout .ln")];
       const pts = [...card.querySelectorAll(".callout .pt")];
-      const texts = [...card.querySelectorAll(".callout text")];
-      const base = 120 + ci * 160;
-      if (shapes.length) {
-        anime({ targets: shapes, strokeDashoffset: [anime.setDashoffset, 0], duration: 900, delay: anime.stagger(25, { start: base }), easing: "easeInOutSine" });
-        anime({ targets: shapes, fillOpacity: [0, 1], duration: 500, delay: base + 500, easing: "linear" });
-      }
+      const labels = [...card.querySelectorAll(".callout .aico, .callout text")];
+      anime({ targets: card, opacity: [0, 1], translateY: [14, 0], duration: 380, delay: base - 100, easing: "easeOutCubic", complete: clear([card]) });
+      if (gun) anime({ targets: gun, opacity: [0, 1], translateX: [-26, 0], duration: 520, delay: base, easing: "easeOutCubic", complete: clear([gun]) });
       if (lines.length) {
-        anime({ targets: lines, strokeDashoffset: [anime.setDashoffset, 0], duration: 500, delay: anime.stagger(120, { start: base + 700 }), easing: "easeOutQuad" });
-        anime({ targets: pts, scale: [0, 1], duration: 300, delay: anime.stagger(120, { start: base + 700 }), easing: "easeOutBack" });
-        anime({ targets: texts, opacity: [0, 1], translateY: [6, 0], duration: 350, delay: anime.stagger(120, { start: base + 1050 }), easing: "easeOutQuad" });
+        anime({ targets: lines, strokeDashoffset: [anime.setDashoffset, 0], duration: 460, delay: anime.stagger(110, { start: base + 380 }), easing: "easeOutQuad",
+          complete: () => lines.forEach((l) => { l.style.strokeDasharray = ""; l.style.strokeDashoffset = ""; }) });
+        anime({ targets: pts, opacity: [0, 1], duration: 240, delay: anime.stagger(110, { start: base + 380 }), easing: "linear", complete: clear(pts) });
+        anime({ targets: labels, opacity: [0, 1], duration: 320, delay: anime.stagger(40, { start: base + 700 }), easing: "easeOutQuad", complete: clear(labels) });
       }
     });
+  }
+
+  // Sylwetka operatora: wjeżdża z prawej, nazwa w tle pojawia się wolniej.
+  function figure(root) {
+    if (!ok()) return;
+    const img = root.querySelector(".fig-img, .op-figure.nofig .fig-fallback");
+    const name = root.querySelector(".fig-name");
+    if (img) anime({ targets: img, opacity: [0, 1], translateX: [50, 0], duration: 700, delay: 120, easing: "easeOutCubic", complete: clear([img]) });
+    if (name) anime({ targets: name, opacity: [0, 1], translateY: [-20, 0], duration: 900, delay: 200, easing: "easeOutCubic", complete: clear([name]) });
   }
 
   function sidebar(root) {
@@ -78,5 +86,5 @@ window.Anim = (function () {
     if (vantaInstance) { try { vantaInstance.destroy(); } catch { /* ignoruj */ } vantaInstance = null; }
   }
 
-  return { tiles, page, weapons, sidebar, rows, vanta, vantaDestroy };
+  return { tiles, page, weapons, figure, sidebar, rows, vanta, vantaDestroy };
 })();
